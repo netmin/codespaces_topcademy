@@ -1,4 +1,4 @@
-def quick_sort(arr):
+def quick_sort(arr: list[int]) -> list[int]:
 
     if len(arr) <= 1:
         return arr  # A list with 0 or 1 element is already sorted

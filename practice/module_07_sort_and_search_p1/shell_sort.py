@@ -1,4 +1,4 @@
-def shell_sort(arr):
+def shell_sort(arr: list[int]) -> list[int]:
     n = len(arr)
     gap = n // 2  # Initialize the gap size
 

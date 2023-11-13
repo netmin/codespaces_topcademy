@@ -1,4 +1,4 @@
-def sort_halves(arr):
+def sort_halves(arr: list[int]) -> list[int]:
     mid = len(arr) // 2
     # If the length of the list is odd, add one to the middle index for the first half
     if len(arr) % 2 == 1:

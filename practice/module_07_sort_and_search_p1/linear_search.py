@@ -1,7 +1,7 @@
 import random
 
 
-def linear_search(arr, target):
+def linear_search(arr: list[int], target: int) -> int:
 
     for i in range(len(arr)):
         if arr[i] == target:
@@ -26,5 +26,4 @@ def test_linear_search():
     print("All test cases passed!")
 
 
-# Run the test function
 test_linear_search()

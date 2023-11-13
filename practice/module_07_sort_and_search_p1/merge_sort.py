@@ -1,4 +1,4 @@
-def merge_sort(arr):
+def merge_sort(arr: list[int]) -> None:
     if len(arr) > 1:
         mid = len(arr) // 2
         L = arr[:mid]

@@ -1,4 +1,4 @@
-def quick_sum(arr):
+def quick_sum(arr: list[int]) -> int:
     if not arr:
         return 0
     else:

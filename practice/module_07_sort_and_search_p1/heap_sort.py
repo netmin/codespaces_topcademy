@@ -1,4 +1,4 @@
-def heapify(arr, n, i):
+def heapify(arr: list[int], n: int, i: int) -> None:
     """
     Transforms a subtree rooted at index i into a max heap.
 
@@ -26,7 +26,7 @@ def heapify(arr, n, i):
         heapify(arr, n, largest)
 
 
-def heap_sort(arr):
+def heap_sort(arr: list[int]) -> None:
     n = len(arr)
 
     # Build a max heap
@@ -39,13 +39,26 @@ def heap_sort(arr):
         heapify(arr, i, 0)
 
 
-# Simple tests
 def test_heap_sort():
-    assert heap_sort([12, 11, 13, 5, 6, 7]) == [5, 6, 7, 11, 12, 13], "Test case 1 failed"
-    assert heap_sort([1, 12, 9, 5, 6, 10]) == [1, 5, 6, 9, 10, 12], "Test case 2 failed"
-    assert heap_sort([10, 7, 8, 9, 1, 5]) == [1, 5, 7, 8, 9, 10], "Test case 3 failed"
-    assert heap_sort([]) == [], "Test case 4 failed (empty list)"
-    assert heap_sort([1]) == [1], "Test case 5 failed (single element)"
+    test_data = [12, 11, 13, 5, 6, 7]
+    heap_sort(test_data)
+    assert test_data == [5, 6, 7, 11, 12, 13], "Test case 1 failed"
+
+    test_data = [1, 12, 9, 5, 6, 10]
+    heap_sort(test_data)
+    assert test_data == [1, 5, 6, 9, 10, 12], "Test case 2 failed"
+
+    test_data = [10, 7, 8, 9, 1, 5]
+    heap_sort(test_data)
+    assert test_data == [1, 5, 7, 8, 9, 10], "Test case 3 failed"
+
+    test_data = []
+    heap_sort(test_data)
+    assert test_data == [], "Test case 4 failed (empty list)"
+
+    test_data = [1]
+    heap_sort(test_data)
+    assert test_data == [1], "Test case 5 failed (single element)"
 
     print("All test cases passed!")
 
