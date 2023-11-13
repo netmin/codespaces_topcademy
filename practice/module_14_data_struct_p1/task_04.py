@@ -1,3 +1,6 @@
+import unittest
+
+
 class Stack:
     def __init__(self) -> None:
         self.stack: list[int] = []
@@ -31,16 +34,21 @@ class Stack:
 
 def user_interaction() -> None:
     stack = Stack()
+    menu_options = [
+        "Push a value to the stack.",
+        "Pop a value from the stack.",
+        "Count the values in the stack.",
+        "Check if the stack is empty.",
+        "Clear the stack.",
+        "Peek the top value of the stack.",
+        "Exit."
+    ]
 
     while True:
         print("\nMenu:")
-        print("1. Push a value to the stack.")
-        print("2. Pop a value from the stack.")
-        print("3. Count the values in the stack.")
-        print("4. Check if the stack is empty.")
-        print("5. Clear the stack.")
-        print("6. Peek the top value of the stack.")
-        print("7. Exit.")
+        for i, option in enumerate(menu_options, start=1):
+            print(f"{i}. {option}")
+
         choice = input("Choose an option: ")
 
         match choice:
@@ -74,5 +82,49 @@ def user_interaction() -> None:
                 print("Invalid option, please try again.")
 
 
-if __name__ == "__main__":
-    user_interaction()
+class TestStack(unittest.TestCase):
+
+    def test_push(self):
+        stack = Stack()
+        stack.push(1)
+        self.assertEqual(stack.peek(), 1, "Failed to push element '1'")
+        stack.push(2)
+        self.assertEqual(stack.peek(), 2, "Failed to push element '2'")
+
+    def test_pop(self):
+        stack = Stack()
+        stack.push(1)
+        stack.push(2)
+        self.assertEqual(stack.pop(), 2, "Failed to pop the top element")
+        self.assertEqual(stack.pop(), 1, "Failed to pop the second element")
+        self.assertIsNone(stack.pop(), "Popping from empty stack should return None")
+
+    def test_count(self):
+        stack = Stack()
+        stack.push(1)
+        stack.push(2)
+        self.assertEqual(stack.count(), 2, "Count should be 2")
+
+    def test_is_empty(self):
+        stack = Stack()
+        self.assertTrue(stack.is_empty(), "Stack should be empty")
+        stack.push(1)
+        self.assertFalse(stack.is_empty(), "Stack should not be empty")
+
+    def test_clear(self):
+        stack = Stack()
+        stack.push(1)
+        stack.push(2)
+        stack.clear()
+        self.assertTrue(stack.is_empty(), "Stack should be empty after clearing")
+
+    def test_peek(self):
+        stack = Stack()
+        stack.push(1)
+        self.assertEqual(stack.peek(), 1, "Failed to peek the top element")
+        stack.clear()
+        self.assertIsNone(stack.peek(), "Peeking from empty stack should return None")
+
+
+if __name__ == '__main__':
+    unittest.main()

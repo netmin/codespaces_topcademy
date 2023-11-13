@@ -1,20 +1,21 @@
+import unittest
+from collections import deque
+
+
 class Stack:
-    def __init__(self, size: int) -> None:
+    def __init__(self, size: int):
         self.size = size
-        self.stack: list[int] = []
+        self.stack = deque([], maxlen=size)
 
-    def push(self, value: int) -> None:
-        if not self.is_full():
-            self.stack.append(value)
-        else:
-            print("Stack is full. Cannot push another value.")
+    def push(self, value: int):
+        if self.is_full():
+            raise OverflowError("Stack is full. Cannot push another value.")
+        self.stack.append(value)
 
-    def pop(self) -> int | None:
-        if not self.is_empty():
-            return self.stack.pop()
-        else:
-            print("Stack is empty. Cannot pop a value.")
-            return None
+    def pop(self) -> int:
+        if self.is_empty():
+            raise IndexError("Stack is empty. Cannot pop a value.")
+        return self.stack.pop()
 
     def count(self) -> int:
         return len(self.stack)
@@ -25,18 +26,16 @@ class Stack:
     def is_full(self) -> bool:
         return len(self.stack) == self.size
 
-    def clear(self) -> None:
-        self.stack = []
+    def clear(self):
+        self.stack.clear()
 
-    def peek(self) -> int | None:
-        if not self.is_empty():
-            return self.stack[-1]
-        else:
-            print("Stack is empty. Nothing to peek.")
-            return None
+    def peek(self) -> int:
+        if self.is_empty():
+            raise IndexError("Stack is empty. Nothing to peek.")
+        return self.stack[-1]
 
 
-def user_interaction() -> None:
+def user_interaction():
     stack_size = int(input("Enter the fixed size for the stack: "))
     stack = Stack(stack_size)
 
@@ -54,16 +53,18 @@ def user_interaction() -> None:
 
         match choice:
             case "1":
-                if stack.is_full():
-                    print("Stack is already full.")
-                else:
-                    value = int(input("Enter an integer value to push: "))
+                value = int(input("Enter an integer value to push: "))
+                try:
                     stack.push(value)
                     print(f"Value {value} pushed to the stack.")
+                except OverflowError as oe:
+                    print(oe)
             case "2":
-                value = stack.pop()
-                if value is not None:
+                try:
+                    value = stack.pop()
                     print(f"Value {value} popped from the stack.")
+                except IndexError as ie:
+                    print(ie)
             case "3":
                 print(f"The stack contains {stack.count()} values.")
             case "4":
@@ -82,9 +83,11 @@ def user_interaction() -> None:
                 stack.clear()
                 print("The stack has been cleared.")
             case "7":
-                value = stack.peek()
-                if value is not None:
+                try:
+                    value = stack.peek()
                     print(f"The top value of the stack is {value}.")
+                except IndexError as ie:
+                    print(ie)
             case "8":
                 print("Exiting the program.")
                 break
@@ -92,5 +95,59 @@ def user_interaction() -> None:
                 print("Invalid option, please try again.")
 
 
-if __name__ == "__main__":
-    user_interaction()
+class TestStack(unittest.TestCase):
+
+    def test_push(self):
+        stack = Stack(2)
+        stack.push(1)
+        self.assertEqual(stack.peek(), 1, "Failed to push element '1'")
+        stack.push(2)
+        self.assertEqual(stack.peek(), 2, "Failed to push element '2'")
+        with self.assertRaises(OverflowError):
+            stack.push(3)
+
+    def test_pop(self):
+        stack = Stack(2)
+        stack.push(1)
+        stack.push(2)
+        self.assertEqual(stack.pop(), 2, "Failed to pop the top element")
+        self.assertEqual(stack.pop(), 1, "Failed to pop the second element")
+        with self.assertRaises(IndexError):
+            stack.pop()
+
+    def test_count(self):
+        stack = Stack(3)
+        stack.push(1)
+        stack.push(2)
+        self.assertEqual(stack.count(), 2, "Count should be 2")
+
+    def test_is_empty(self):
+        stack = Stack(1)
+        self.assertTrue(stack.is_empty(), "Stack should be empty")
+        stack.push(1)
+        self.assertFalse(stack.is_empty(), "Stack should not be empty")
+
+    def test_is_full(self):
+        stack = Stack(1)
+        self.assertFalse(stack.is_full(), "Stack should not be full")
+        stack.push(1)
+        self.assertTrue(stack.is_full(), "Stack should be full")
+
+    def test_clear(self):
+        stack = Stack(2)
+        stack.push(1)
+        stack.push(2)
+        stack.clear()
+        self.assertTrue(stack.is_empty(), "Stack should be empty after clearing")
+
+    def test_peek(self):
+        stack = Stack(1)
+        stack.push(1)
+        self.assertEqual(stack.peek(), 1, "Failed to peek the top element")
+        stack.clear()
+        with self.assertRaises(IndexError):
+            stack.peek()
+
+
+if __name__ == '__main__':
+    unittest.main()

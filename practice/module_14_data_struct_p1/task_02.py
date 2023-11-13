@@ -1,3 +1,4 @@
+import unittest
 from typing import Any, Optional
 
 
@@ -11,7 +12,7 @@ class DoublyListNode:
 
 
 class DoublyLinkedList:
-    """A single doubly-linked list class"""
+    """A doubly-linked list class"""
 
     def __init__(self) -> None:
         self.head: Optional[DoublyListNode] = None
@@ -36,16 +37,16 @@ class DoublyLinkedList:
                     current.next.prev = current.prev
                 if current == self.head:
                     self.head = current.next
-                if current.tail == self.tail:
+                if current == self.tail:
                     self.tail = current.prev
-
                 return True
+
+            current = current.next
 
         return False
 
     def display(self) -> list[Any]:
         elements = []
-
         current = self.head
         while current:
             elements.append(current.value)
@@ -82,43 +83,80 @@ def user_interaction() -> None:
             "1. Add element to the list.\n"
             "2. Delete element from the list.\n"
             "3. Show the contents of the list.\n"
-            "4. Check if a value is in the list.\n"
+            "4. Search for a value in the list.\n"
             "5. Replace a value in the list.\n"
             "6. Exit."
         )
-        choice = input("Choose an option: ")
 
-        match choice:
-            case "1":
+        try:
+            choice = input("Choose an option: ")
+            choice = int(choice)
+            if choice < 1 or choice > 6:
+                raise ValueError
+
+            if choice == 1:
                 value = input("Enter the value to add: ")
                 dll.add(value)
-            case "2":
+            elif choice == 2:
                 value = input("Enter the value to delete: ")
                 if dll.delete(value):
                     print("Value deleted from the list.")
                 else:
                     print("Value not found in the list.")
-            case "3":
+            elif choice == 3:
                 print(f"List contents: {dll.display()}")
-            case "4":
-                value = input("Enter the value to check: ")
+            elif choice == 4:
+                value = input("Enter the value to search: ")
                 if dll.search(value):
                     print("Value found in the list.")
                 else:
                     print("Value not in the list.")
-            case "5":
+            elif choice == 5:
                 target = input("Enter the value to replace: ")
                 new_value = input("Enter the new value: ")
                 if dll.replace(target, new_value):
                     print(f"Value '{target}' replaced with '{new_value}'.")
                 else:
                     print("Value not found in the list.")
-            case "6":
+            elif choice == 6:
                 print("Exiting the program.")
                 break
-            case _:
-                print("Invalid option, please try again.")
+        except ValueError:
+            print("Invalid option, please enter a number between 1 and 6.")
 
 
-if __name__ == "__main__":
-    user_interaction()
+class TestDoublyLinkedList(unittest.TestCase):
+
+    def test_add(self):
+        dll = DoublyLinkedList()
+        dll.add("a")
+        self.assertEqual(dll.display(), ["a"], "Failed to add element 'a'")
+        dll.add("b")
+        self.assertEqual(dll.display(), ["a", "b"], "Failed to add element 'b'")
+
+    def test_delete(self):
+        dll = DoublyLinkedList()
+        dll.add("a")
+        dll.add("b")
+        result = dll.delete("a")
+        self.assertTrue(result, "Failed to delete element 'a'")
+        self.assertEqual(dll.display(), ["b"], "List should contain only 'b'")
+
+    def test_search(self):
+        dll = DoublyLinkedList()
+        dll.add("a")
+        dll.add("b")
+        self.assertTrue(dll.search("a"), "Element 'a' should be found")
+        self.assertFalse(dll.search("c"), "Element 'c' should not be found")
+
+    def test_replace(self):
+        dll = DoublyLinkedList()
+        dll.add("a")
+        dll.add("b")
+        result = dll.replace("a", "c")
+        self.assertTrue(result, "Failed to replace 'a' with 'c'")
+        self.assertEqual(dll.display(), ["c", "b"], "Element 'a' should be replaced with 'c'")
+
+
+if __name__ == '__main__':
+    unittest.main()
